@@ -10,6 +10,7 @@ class Songs(models.Model):
     listen_count = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    asd
 
     def __str__(self):
         return self.name
