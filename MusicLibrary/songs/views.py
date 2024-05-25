@@ -45,3 +45,6 @@ class SongsCreateView(APIView, FileValidationMixin):
             return Response({"error": 'Failed Validation', 'song_validation': validation_song, 'image_validation': validation_img}, status=status.HTTP_400_BAD_REQUEST)
 
 
+class SongDeleteView(APIView):
+    def post(self, request):
+        return True
