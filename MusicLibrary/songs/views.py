@@ -1,20 +1,11 @@
+import cloudinary
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.exceptions import AuthenticationFailed
 from rest_framework import status
-from django.core.exceptions import ObjectDoesNotExist
-from users.models import User
-from .serializers import SongsSerializer, ArtistSongsSerializer
-
-import cloudinary
-import jwt
-import magic
-from PIL import Image
-from io import BytesIO
-
 from .utils import  get_user_from_token
 from .mixins import FileValidationMixin
-from .services import fill_song, fill_artist_songs
+from .services import fill_song, fill_artist_songs, get_song_by_id, delete_son_by_id
 
 class SongsCreateView(APIView, FileValidationMixin):
     def post(self, request):
@@ -27,24 +18,33 @@ class SongsCreateView(APIView, FileValidationMixin):
             try:
                 song_file.seek(0)
                 img_file.seek(0)
-                
-                uploaded_file =cloudinary.uploader.upload(song_file, resource_type='video', folder = f'songs/{get_user_from_token(request)}/')
-                upload_img = cloudinary.uploader.upload(img_file, folder = f'songs_img/{get_user_from_token(request)}/')
 
-                song_id = fill_song(request, uploaded_file['secure_url'], upload_img['secure_url'])
+                uploaded_file =cloudinary.uploader.upload(song_file, resource_type='video', folder = f'songs/{get_user_from_token(request)}/')
+                uploaded_img = cloudinary.uploader.upload(img_file, folder = f'songs_img/{get_user_from_token(request)}/')
+
+                song_id = fill_song(request, uploaded_file['secure_url'], uploaded_file['public_id'], uploaded_img['secure_url'], uploaded_img['public_id'])
                 if(song_id['status'] == True):
                     fill_artist_songs(request.data.get('user_ids').split(','), song_id['id'])
-                    return Response({"message": "File uploaded successfully", "song_url": uploaded_file['secure_url'], "image_url": upload_img['secure_url']}, status=status.HTTP_201_CREATED)
+                    return Response({'status': 'true',"message": "File uploaded successfully", "song_url": uploaded_file['secure_url'], "image_url": uploaded_img['secure_url']}, status=status.HTTP_201_CREATED)
                 else:
-                    return Response({"error": "Failed to upload song."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                    return Response({'status': 'false', "error": "Failed to upload song."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
             except Exception as e:
-                return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                return Response({'status': 'false', "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         else:
-            return Response({"error": 'Failed Validation', 'song_validation': validation_song, 'image_validation': validation_img}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'status': 'false', "error": 'Failed Validation', 'song_validation': validation_song, 'image_validation': validation_img}, status=status.HTTP_400_BAD_REQUEST)
 
 
-class SongDeleteView(APIView):
+class SongsDeleteView(APIView):
     def post(self, request):
-        return True
+
+        try:
+            song = get_song_by_id(request.data.get('song_id'))
+            song_delete_result = cloudinary.api.delete_resources(song.get('song_public_id'), resource_type="video", type="upload")
+            image_delete_result = cloudinary.api.delete_resources(song.get('image_public_id'), resource_type="image", type="upload")
+            delete_son_by_id(request.data.get('song_id'))
+            return Response({'status': 'true', "message": "File Deleted successfully", "data" : song, "image_data": image_delete_result, "song_data": song_delete_result}, status=status.HTTP_200_OK)
+        
+        except Exception as e:
+            return Response({'status': 'false',"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

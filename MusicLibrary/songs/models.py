@@ -4,8 +4,10 @@ from users.models import User
 
 class Songs(models.Model):
     name = models.CharField(max_length=150)
-    song_url = models.TextField(max_length=1500)
-    image_url = models.TextField(max_length=1500)
+    song_url = models.TextField(max_length=600)
+    song_public_id = models.TextField(max_length=500)
+    image_url = models.TextField(max_length=600)
+    image_public_id = models.TextField(max_length=500)
     description = models.TextField(max_length=1500)
     listen_count = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)

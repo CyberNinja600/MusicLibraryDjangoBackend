@@ -1,10 +1,13 @@
 from .serializers import SongsSerializer, ArtistSongsSerializer
+from .models import Songs, Artist_Songs
 
-def fill_song(request, song_url, image_url):
+def fill_song(request, song_url, song_public_id ,image_url, image_public_id):
     data = {
         "name": request.data.get('name'),
         "song_url": song_url,
+        "song_public_id": song_public_id,
         "image_url": image_url,
+        "image_public_id": image_public_id,
         "description": request.data.get('description')
     }
 
@@ -32,6 +35,12 @@ def fill_artist_songs(user_ids, song_id):
                 'status': False,
             })
     return True
+
+def get_song_by_id(song_id):
+    return SongsSerializer(Songs.objects.get(id=song_id)).data
+
+def delete_son_by_id(song_id):
+    return Songs.objects.filter(id=song_id).delete()
 
 def failed_upload():
     return True
