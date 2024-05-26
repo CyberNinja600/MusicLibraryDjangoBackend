@@ -42,5 +42,9 @@ def get_song_by_id(song_id):
 def delete_son_by_id(song_id):
     return Songs.objects.filter(id=song_id).delete()
 
+def get_my_uploads(uid):
+    songs = Songs.objects.filter(artist_songs__user_id=uid)
+    return SongsSerializer(songs, many=True).data
+
 def failed_upload():
     return True

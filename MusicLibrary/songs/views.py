@@ -5,15 +5,13 @@ from rest_framework.response import Response
 from rest_framework import status
 from .utils import  get_user_from_token
 from .mixins import FileValidationMixin
-from .services import fill_song, fill_artist_songs, get_song_by_id, delete_son_by_id
+from .services import *
 
 class SongsCreateView(APIView, FileValidationMixin):
     def post(self, request):
-        
         song_file = request.data.get('song')
         img_file = request.data.get('image')
         validation, validation_song, validation_img = self.validate_files(song_file, img_file)
-        
         if validation:
             try:
                 song_file.seek(0)
@@ -38,7 +36,6 @@ class SongsCreateView(APIView, FileValidationMixin):
 
 class SongsDeleteView(APIView):
     def post(self, request):
-
         try:
             song = get_song_by_id(request.data.get('song_id'))
             song_delete_result = cloudinary.api.delete_resources(song.get('song_public_id'), resource_type="video", type="upload")
@@ -48,3 +45,11 @@ class SongsDeleteView(APIView):
         
         except Exception as e:
             return Response({'status': 'false',"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+class SongsMyUploadsView(APIView):
+    def get(self, request):
+        try:
+            data = get_my_uploads(get_user_from_token(request))
+            return Response({'status': 'true', 'data': data}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'status': 'false', "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
