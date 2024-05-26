@@ -9,6 +9,7 @@ from .services import *
 
 class SongsCreateView(APIView, FileValidationMixin):
     def post(self, request):
+        uid = get_user_from_token(request)
         song_file = request.data.get('song')
         img_file = request.data.get('image')
         validation, validation_song, validation_img = self.validate_files(song_file, img_file)
@@ -16,9 +17,8 @@ class SongsCreateView(APIView, FileValidationMixin):
             try:
                 song_file.seek(0)
                 img_file.seek(0)
-
-                uploaded_file =cloudinary.uploader.upload(song_file, resource_type='video', folder = f'songs/{get_user_from_token(request)}/')
-                uploaded_img = cloudinary.uploader.upload(img_file, folder = f'songs_img/{get_user_from_token(request)}/')
+                uploaded_file =cloudinary.uploader.upload(song_file, resource_type='video', folder = f'songs/{uid}/')
+                uploaded_img = cloudinary.uploader.upload(img_file, folder = f'songs_img/{uid}/')
 
                 song_id = fill_song(request, uploaded_file['secure_url'], uploaded_file['public_id'], uploaded_img['secure_url'], uploaded_img['public_id'])
                 if(song_id['status'] == True):
@@ -37,6 +37,7 @@ class SongsCreateView(APIView, FileValidationMixin):
 class SongsDeleteView(APIView):
     def post(self, request):
         try:
+            get_user_from_token(request)
             song = get_song_by_id(request.data.get('song_id'))
             song_delete_result = cloudinary.api.delete_resources(song.get('song_public_id'), resource_type="video", type="upload")
             image_delete_result = cloudinary.api.delete_resources(song.get('image_public_id'), resource_type="image", type="upload")
@@ -49,7 +50,17 @@ class SongsDeleteView(APIView):
 class SongsMyUploadsView(APIView):
     def get(self, request):
         try:
+            get_user_from_token(request)
             data = get_my_uploads(get_user_from_token(request))
+            return Response({'status': 'true', 'data': data}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'status': 'false', "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class SongsAllUploadsView(APIView):
+    def get(self, request):
+        try:
+            get_user_from_token(request)
+            data = SongsSerializer(Songs.objects.all(), many=True).data
             return Response({'status': 'true', 'data': data}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'status': 'false', "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
