@@ -1,5 +1,7 @@
 from .serializers import SongsSerializer, ArtistSongsSerializer
 from .models import Songs, Artist_Songs
+from django.shortcuts import get_object_or_404
+import cloudinary
 
 def fill_song(request, song_url, song_public_id ,image_url, image_public_id):
     data = {
@@ -48,3 +50,36 @@ def get_my_uploads(uid):
 
 def failed_upload():
     return True
+
+def update_song_data(request, uid):
+    song = get_object_or_404(Songs, id=request.data.get('id'))
+    name = request.data.get('name', song.name)
+    description = request.data.get('description', song.description)
+    image_url, image_public_id, image_updated = update_song_url(song, request, uid, False)
+
+    song.name = name
+    song.description = description
+    song.image_url = image_url
+    song.image_public_id = image_public_id
+    song.save()
+
+    return({'data' : SongsSerializer(song).data, 'image_updated': image_updated})
+
+def update_song_url(song, request, uid, image_updated = False):
+    if 'image' in request.data:
+        delete_old_image_song(song)
+        image_url, image_public_id = upload_image_song(request, uid)
+        image_updated = True
+    else:
+        image_url = song.image_url
+        image_public_id = song.image_public_id
+    return image_url, image_public_id, image_updated
+
+def delete_old_image_song(song):
+    cloudinary.api.delete_resources(song.image_public_id, resource_type="image", type="upload")
+
+def upload_image_song(request, uid):
+    img_file = request.data.get('image')
+    img_file.seek(0)
+    uploaded_img = cloudinary.uploader.upload(img_file, folder = f'songs_img/{uid}/')
+    return uploaded_img['secure_url'], uploaded_img['public_id']

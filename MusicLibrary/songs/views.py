@@ -64,3 +64,13 @@ class SongsAllUploadsView(APIView):
             return Response({'status': 'true', 'data': data}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'status': 'false', "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class SongsUpdateView(APIView):
+    def post(self, request):
+        uid = get_user_from_token(request)
+        result = update_song_data(request, uid)
+            
+
+        return Response(result)            
+        # if task.exists():
+        #     task.update(**request.data)
