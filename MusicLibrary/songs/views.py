@@ -74,8 +74,4 @@ class SongsUpdateView(APIView):
             fill_artist_songs(request.data.get('user_ids').split(','), request.data.get('id'))
 
         result = update_song_data(request, uid)
-            
-
         return Response(result)            
-        # if task.exists():
-        #     task.update(**request.data)
