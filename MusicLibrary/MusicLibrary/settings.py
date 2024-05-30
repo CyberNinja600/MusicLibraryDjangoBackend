@@ -52,6 +52,7 @@ EXTERNAL_APPS = [
     'users',
     'to_do_list',
     'songs',
+    'albums',
 ]
 
 INSTALLED_APPS = INSTALLED_APPS + EXTERNAL_APPS
