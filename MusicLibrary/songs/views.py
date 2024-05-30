@@ -68,6 +68,11 @@ class SongsAllUploadsView(APIView):
 class SongsUpdateView(APIView):
     def post(self, request):
         uid = get_user_from_token(request)
+
+        if request.data.get('user_ids'):
+            remove_artists_songs(request.data.get('id'))
+            fill_artist_songs(request.data.get('user_ids').split(','), request.data.get('id'))
+
         result = update_song_data(request, uid)
             
 

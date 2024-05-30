@@ -38,6 +38,9 @@ def fill_artist_songs(user_ids, song_id):
             })
     return True
 
+def remove_artists_songs(song_id):
+    Artist_Songs.objects.filter(song_id=song_id).delete()
+
 def get_song_by_id(song_id):
     return SongsSerializer(Songs.objects.get(id=song_id)).data
 
