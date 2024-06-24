@@ -7,7 +7,7 @@ class Album(models.Model):
     image_url = models.TextField(max_length=600)
     image_public_id = models.TextField(max_length=500)
     listen_count = models.IntegerField(default=0)
-    public = models.IntegerField(default=1,)
+    public = models.IntegerField(default=1)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
