@@ -1,4 +1,6 @@
 from .serializers import AlbumSerializer, SongsAlbumSerializer
+from .models import *
+from django.shortcuts import get_object_or_404
 import cloudinary
 
 def fill_album(request, image_url, image_public_id, created_by):
@@ -17,7 +19,7 @@ def fill_album(request, image_url, image_public_id, created_by):
     else:
         return({'status': False, 'errors': serializer.errors})
     
-def fill_album_songs(request, album_id):
+def fill_album_songs(request, album_id, update = False):
     for i in range(len(request.data.get('songs').split(','))):
         data = {
             "album_id": album_id,
@@ -28,10 +30,13 @@ def fill_album_songs(request, album_id):
         if serializer.is_valid():
             serializer.save()
         else:
-            return({
-                'status': False,
-                'errors': serializer.errors,
-            })
+            if(update):
+                continue
+            else:
+                return({
+                    'status': False,
+                    'errors': serializer.errors,
+                })
     return({'status': True})
     
 def upload_image_album(request, uid):
@@ -39,3 +44,24 @@ def upload_image_album(request, uid):
     img_file.seek(0)
     uploaded_img = cloudinary.uploader.upload(img_file, folder = f'album_img/{uid}/')
     return uploaded_img['secure_url'], uploaded_img['public_id']
+
+
+def get_album_by_id(request):
+    return get_object_or_404(Album, id=request.data.get('id'))
+
+def delete_album_image(album):
+    album.image_url = None
+    album.image_public_id
+    album.save()
+    return cloudinary.api.delete_resources(album.image_public_id, resource_type="image", type="upload")
+
+def update_album_data(request, album):
+    serializer = AlbumSerializer(album, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+    return serializer.data
+
+def update_album_songs(request, id):
+    Songs_Album.objects.filter(album_id=id).delete()
+    response = fill_album_songs(request, id, True)
+    return response

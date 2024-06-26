@@ -4,8 +4,8 @@ from songs.models import Songs
 
 class Album(models.Model):
     name = models.CharField(max_length=150)
-    image_url = models.TextField(max_length=600)
-    image_public_id = models.TextField(max_length=500)
+    image_url = models.TextField(max_length=600, null = True, blank = True)
+    image_public_id = models.TextField(max_length=500, null = True, blank = True)
     listen_count = models.IntegerField(default=0)
     public = models.IntegerField(default=1)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
