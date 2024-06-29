@@ -18,8 +18,12 @@ class AlbumCreateView(APIView):
 class AlbumReadView(APIView):
     def get(self, request, *args, **kwargs):        
         album = get_album_by_id(request, self.kwargs['id'])
-        serializer = AlbumSerializer(album) 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        passed = verify_public(album, get_user_from_token(request))
+        if(passed):
+            serializer = AlbumSerializer(album) 
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response({'status': 'failed', 'error': 'This album is private'}, status=401)
 
 class AlbumUpdateView(APIView):
     def post(self, request, *args, **kwargs):
@@ -47,4 +51,8 @@ class AlbumDeleteView(APIView):
             album.delete()
             return Response({'status': True}, status=status.HTTP_200_OK)
         return Response({'status': False, 'error': 'You cannot delete this album'}, status=401)
-       
+
+class AlbumListView(APIView):
+    def get(self, request):
+        data = get_my_albums(request, get_user_from_token(request))
+        return Response(data, status=status.HTTP_200_OK)

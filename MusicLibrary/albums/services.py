@@ -37,7 +37,7 @@ def fill_album_songs(request, album_id, update = False):
                     'status': False,
                     'errors': serializer.errors,
                 })
-    return({'status': True})
+    return({'status': serializer.data})
     
 def upload_image_album(request, uid):
     img_file = request.data.get('image')
@@ -49,13 +49,21 @@ def upload_image_album(request, uid):
 def get_album_by_id(request, id=None):
     if(id):
         return get_object_or_404(Album, id=id)    
-    return get_object_or_404(Album, id=request.data.get('id'))
+    else:
+        return get_object_or_404(Album, id=request.data.get('id'))
+
+def verify_public(album, id):
+    if(album.public == 0 and album.created_by_id != id):
+        return False
+    else:
+        return True
 
 def delete_album_image(album):
     album.image_url = None
-    return cloudinary.api.delete_resources(album.image_public_id, resource_type="image", type="upload")
+    cloudinary.api.delete_resources(album.image_public_id, resource_type="image", type="upload")
     album.image_public_id = None
     album.save()
+    return('deleted')
 
 def update_album_data(request, album):
     serializer = AlbumSerializer(album, data=request.data, partial=True)
@@ -68,5 +76,7 @@ def update_album_songs(request, id):
     response = fill_album_songs(request, id, True)
     return response
 
-def delete_album_image_song(album):
-    cloudinary.api.delete_resources(album.image_public_id, resource_type="image", type="upload")
+def get_my_albums(request,id):
+    albums = Album.objects.filter(created_by_id=id)
+    serializer = AlbumSerializer(albums, many=True)
+    return serializer.data
