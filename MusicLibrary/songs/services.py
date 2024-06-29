@@ -59,7 +59,6 @@ def update_song_data(request, uid):
     name = request.data.get('name', song.name)
     description = request.data.get('description', song.description)
     image_url, image_public_id, image_updated = update_song_url(song, request, uid, False)
-
     song.name = name
     song.description = description
     song.image_url = image_url

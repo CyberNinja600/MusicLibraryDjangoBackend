@@ -9,11 +9,14 @@ class AlbumCreateView(APIView):
         uid = get_user_from_token(request)
         if(request.data.get('image')):
             image_url, image_public_id  = upload_image_album(request, uid) 
-            response = fill_album(request, image_url, image_public_id, uid)
+            response_album = fill_album(request, image_url, image_public_id, uid)
         else:
-            response = fill_album(request, None, None, uid)
-        response = fill_album_songs(request, response['album_id'])
-        return Response(response, status=status.HTTP_200_OK)
+            response_album = fill_album(request, None, None, uid)
+        fill_album_songs(request, response_album['album_id'])
+
+        album = get_album_by_id(request, response_album['album_id'])
+        songs = get_album_songs(album.id)
+        return Response({"album": AlbumSerializer(album).data, "song": songs}, status=status.HTTP_200_OK)
 
 class AlbumReadView(APIView):
     def get(self, request, *args, **kwargs):        
@@ -21,7 +24,8 @@ class AlbumReadView(APIView):
         passed = verify_public(album, get_user_from_token(request))
         if(passed):
             serializer = AlbumSerializer(album) 
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            songs = get_album_songs(album.id)
+            return Response({"album_data" : serializer.data, "songs": songs}, status=status.HTTP_200_OK)
         else:
             return Response({'status': 'failed', 'error': 'This album is private'}, status=401)
 
