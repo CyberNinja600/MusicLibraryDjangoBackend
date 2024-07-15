@@ -4,6 +4,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from .serializers import UserSerializer
 from .models import User
 import jwt, datetime
+import pytz
 
 class RegisterUser(APIView):
     def post(self, request):
@@ -24,10 +25,10 @@ class LoginUser(APIView):
 
         payload = {
             'id': user.id,
-            'exp': datetime.datetime.now(datetime.UTC) + datetime.timedelta(minutes=60),
-            'iat': datetime.datetime.now(datetime.UTC)
+            'exp': datetime.datetime.now(pytz.UTC) + datetime.timedelta(minutes=60),
+            'iat': datetime.datetime.now(pytz.UTC)
         }
-
+    
         token = jwt.encode(payload, 'secret', algorithm='HS256')
         
         response = Response()
