@@ -22,5 +22,6 @@ urlpatterns = [
     path('api/', include('users.urls')),
     path('api/', include('to_do_list.urls')),
     path('api/', include('songs.urls')),
-    path('api/', include('albums.urls'))
+    path('api/', include('albums.urls')),
+    path('api/', include('music_player.urls'))
 ]
