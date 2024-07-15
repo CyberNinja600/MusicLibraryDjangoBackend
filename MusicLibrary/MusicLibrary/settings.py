@@ -15,7 +15,8 @@ from dotenv import load_dotenv
 import os
 import cloudinary
 import cloudinary.uploader
-import cloudinary.api	
+import cloudinary.api
+import cloudinary_storage
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -46,6 +47,7 @@ INSTALLED_APPS = [
     'cloudinary',
     'rest_framework',
     'corsheaders',
+    'cloudinary_storage',
 ]
 
 EXTERNAL_APPS = [
@@ -144,7 +146,9 @@ cloudinary.config(
     cloud_name  = os.getenv('CLOUD_NAME'),
     api_key = os.getenv('API_KEY'),
     api_secret  = os.getenv('API_SECRET')
+    disable_tcp_keep_alive = True
 )
+
 
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
