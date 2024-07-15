@@ -28,26 +28,26 @@ class LoginUser(APIView):
             'exp': datetime.datetime.now(pytz.UTC) + datetime.timedelta(minutes=60),
             'iat': datetime.datetime.now(pytz.UTC)
         }
-    
+
         token = jwt.encode(payload, 'secret', algorithm='HS256')
-        
+
         response = Response()
 
         response.set_cookie(key='jwt', value=token, httponly=True)
         response.data = {
-                            'msg': 'Login successful!', 
-                            'data': UserSerializer(user).data, 
+                            'msg': 'Login successful!',
+                            'data': UserSerializer(user).data,
                             'token': token
                         }
         return response
-    
+
 class UserView(APIView):
     def get(self, request):
         token = request.COOKIES.get('jwt')
 
         if not token:
             raise AuthenticationFailed('Unauthenticated')
-        
+
         try:
             payload = jwt.decode(token, 'secret', algorithms=['HS256'])
         except:
@@ -65,4 +65,3 @@ class LogoutUser(APIView):
                             'msg': 'Logout successful!'
                         }
         return response
-    
