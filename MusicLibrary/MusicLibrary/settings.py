@@ -142,11 +142,11 @@ MEDIA_URL = '/song/'
 
 load_dotenv()
 cloudinary.config(
-    cloud_name  = 'dk0qatnu1',
-    api_key = '558622587792983',
-    api_secret  = '16EKcY-xiWFGqzYBe4NI28inJRw'
+    cloud_name  = os.getenv('CLOUD_NAME'),
+    api_key = os.getenv('API_KEY'),
+    api_secret  = os.getenv('API_SECRET'),
+    disable_tcp_keep_alive = True
 )
-
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
