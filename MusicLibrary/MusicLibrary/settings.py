@@ -14,12 +14,9 @@ from pathlib import Path
 from dotenv import load_dotenv
 import os
 import cloudinary
-<<<<<<< HEAD
-=======
 import cloudinary.uploader
 import cloudinary.api
 import cloudinary_storage
->>>>>>> d507144b89a00910875a5563a6100f8a2bcf361c
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -147,18 +144,10 @@ MEDIA_URL = '/song/'
 
 load_dotenv()
 cloudinary.config(
-<<<<<<< HEAD
-    cloud_name  = "dk0qatnu1",
-    api_key = "558622587792983",
-    api_secret  = "16EKcY-xiWFGqzYBe4NI28inJRw",
-    api_proxy = "http://proxy.server:3128",
-    secure = False
-=======
     cloud_name  = os.getenv('CLOUD_NAME'),
     api_key = os.getenv('API_KEY'),
     api_secret  = os.getenv('API_SECRET'),
     disable_tcp_keep_alive = True
->>>>>>> d507144b89a00910875a5563a6100f8a2bcf361c
 )
 
 import cloudinary.uploader
