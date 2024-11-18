@@ -5,6 +5,7 @@ from .serializers import UserSerializer
 from .models import User
 import jwt, datetime
 import pytz
+import os
 
 class RegisterUser(APIView):
     def post(self, request):
@@ -37,7 +38,7 @@ class LoginUser(APIView):
         response.data = {
                             'msg': 'Login successful!',
                             'data': UserSerializer(user).data,
-                            'token': token
+                            'token': token,
                         }
         return response
 
