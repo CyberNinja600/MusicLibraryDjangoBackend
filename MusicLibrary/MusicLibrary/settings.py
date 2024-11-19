@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'cloudinary',
     'rest_framework',
     'corsheaders',
-    'cloudinary_storage',
+    # 'cloudinary_storage',
 ]
 
 EXTERNAL_APPS = [
