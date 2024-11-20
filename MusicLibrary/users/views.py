@@ -69,6 +69,14 @@ class LogoutUser(APIView):
     def post(self, request):
         response = Response()
         response.delete_cookie('jwt')
+        response.set_cookie(
+            key='jwt',
+            value='',
+            # httponly=True,         # Prevent access by JavaScript
+            secure=True,          # Use `True` only for HTTPS; set to `False` for development
+            samesite='None',        # Allow cross-origin cookies for navigation
+            path="/"
+        )
         response.data = {
                             'msg': 'Logout successful!'
                         }
