@@ -17,6 +17,7 @@ import cloudinary
 import cloudinary.uploader
 import cloudinary.api
 import cloudinary_storage
+# from corsheaders.defaults import default_headers
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -32,7 +33,7 @@ SECRET_KEY = 'django-insecure-3ehajc!oov21(tgwpf+dob)d@jq*vp-79bn#wf-)mcagqw3do)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -97,9 +98,10 @@ WSGI_APPLICATION = 'MusicLibrary.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'music_library',
-        'USER' : 'root',
-        'PASSWORD' : 'root',
+        'NAME': 'Shayanto$default',
+        'USER' : 'Shayanto',
+        'PASSWORD' : '5uU7Zh_LAJJfwT(',
+        'HOST' : 'Shayanto.mysql.pythonanywhere-services.com'
     }
 }
 
@@ -149,6 +151,8 @@ cloudinary.config(
     disable_tcp_keep_alive = True
 )
 
+import cloudinary.uploader
+import cloudinary.api
 
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
@@ -163,3 +167,12 @@ AUTH_USER_MODEL = 'users.User'
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
+# CORS_ALLOW_HEADERS = list(default_headers) + [
+#     'authorization',
+#     'content-type',
+# ]
+# REST_FRAMEWORK = {
+#     'DEFAULT_AUTHENTICATION_CLASSES': (
+#         'rest_framework_simplejwt.authentication.JWTAuthentication',
+#     ),
+# }

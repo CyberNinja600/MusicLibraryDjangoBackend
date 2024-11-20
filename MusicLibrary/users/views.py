@@ -5,6 +5,7 @@ from .serializers import UserSerializer
 from .models import User
 import jwt, datetime
 import pytz
+import os
 
 class RegisterUser(APIView):
     def post(self, request):
@@ -28,26 +29,33 @@ class LoginUser(APIView):
             'exp': datetime.datetime.now(pytz.UTC) + datetime.timedelta(minutes=60),
             'iat': datetime.datetime.now(pytz.UTC)
         }
-    
+
         token = jwt.encode(payload, 'secret', algorithm='HS256')
-        
+
         response = Response()
 
-        response.set_cookie(key='jwt', value=token, httponly=True)
+        response.set_cookie(
+            key='jwt',
+            value=token,
+            # httponly=True,         # Prevent access by JavaScript
+            secure=True,          # Use `True` only for HTTPS; set to `False` for development
+            samesite='None',        # Allow cross-origin cookies for navigation
+            path="/"  
+        )
         response.data = {
-                            'msg': 'Login successful!', 
-                            'data': UserSerializer(user).data, 
-                            'token': token
+                            'msg': 'Login successful!',
+                            'data': UserSerializer(user).data,
+                            'token': token,
                         }
         return response
-    
+
 class UserView(APIView):
     def get(self, request):
         token = request.COOKIES.get('jwt')
 
         if not token:
             raise AuthenticationFailed('Unauthenticated')
-        
+
         try:
             payload = jwt.decode(token, 'secret', algorithms=['HS256'])
         except:
@@ -61,8 +69,15 @@ class LogoutUser(APIView):
     def post(self, request):
         response = Response()
         response.delete_cookie('jwt')
+        response.set_cookie(
+            key='jwt',
+            value='',
+            # httponly=True,         # Prevent access by JavaScript
+            secure=True,          # Use `True` only for HTTPS; set to `False` for development
+            samesite='None',        # Allow cross-origin cookies for navigation
+            path="/"
+        )
         response.data = {
                             'msg': 'Logout successful!'
                         }
         return response
-    
