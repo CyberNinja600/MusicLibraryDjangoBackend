@@ -37,9 +37,10 @@ class LoginUser(APIView):
         response.set_cookie(
             key='jwt',
             value=token,
-            httponly=True,      # Prevent client-side JS from accessing the cookie
-            samesite='Strict',  # Adjust based on frontend/backend configuration
-            secure=True         # Use in production (HTTPS)
+            httponly=True,         # Prevent access by JavaScript
+            secure=False,          # Use `True` only for HTTPS; set to `False` for development
+            samesite='Lax',        # Allow cross-origin cookies for navigation
+            path="/"  
         )
         response.data = {
                             'msg': 'Login successful!',
