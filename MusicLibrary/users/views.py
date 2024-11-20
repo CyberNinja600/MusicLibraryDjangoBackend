@@ -34,7 +34,13 @@ class LoginUser(APIView):
 
         response = Response()
 
-        response.set_cookie(key='jwt', value=token, httponly=True)
+        response.set_cookie(
+            key='jwt',
+            value=token,
+            httponly=True,      # Prevent client-side JS from accessing the cookie
+            samesite='Strict',  # Adjust based on frontend/backend configuration
+            secure=True         # Use in production (HTTPS)
+        )
         response.data = {
                             'msg': 'Login successful!',
                             'data': UserSerializer(user).data,
