@@ -85,3 +85,7 @@ def get_album_songs(album_id):
     songs = Songs_Album.objects.filter(album_id=album_id)
     serializer = SongsAlbumSerializer(songs, many=True)
     return serializer.data
+
+def get_all_albums():
+    serializer = AlbumSerializer(Album.objects.all(), many=True)
+    return serializer.data

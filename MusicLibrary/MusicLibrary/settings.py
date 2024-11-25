@@ -102,6 +102,9 @@ DATABASES = {
         'USER' : 'Shayanto',
         'PASSWORD' : '5uU7Zh_LAJJfwT(',
         'HOST' : 'Shayanto.mysql.pythonanywhere-services.com'
+        # 'NAME': 'music_library',
+        # 'USER' : 'root',
+        # 'PASSWORD' : 'root',
     }
 }
 
