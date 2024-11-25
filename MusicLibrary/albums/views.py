@@ -60,3 +60,8 @@ class AlbumListView(APIView):
     def get(self, request):
         data = get_my_albums(request, get_user_from_token(request))
         return Response(data, status=status.HTTP_200_OK)
+
+class AlbumAllListView(APIView):
+    def get(self, request):
+        data = get_all_albums()
+        return Response({'status': 'true', 'data': data}, status=status.HTTP_200_OK)
