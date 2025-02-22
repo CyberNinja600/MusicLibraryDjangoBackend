@@ -34,14 +34,15 @@ class LoginUser(APIView):
 
         response = Response()
 
-        response.set_cookie(
-            key='jwt',
-            value=token,
-            # httponly=True,         # Prevent access by JavaScript
-            secure=True,          # Use `True` only for HTTPS; set to `False` for development
-            samesite='None',        # Allow cross-origin cookies for navigation
-            path="/"  
-        )
+        # response.set_cookie(
+        #     key='jwt',
+        #     value=token,
+        #     httponly=True,         # Prevent access by JavaScript
+        #     secure=True,          # Use `True` only for HTTPS; set to `False` for development
+        #     samesite='None',        # Allow cross-origin cookies for navigation
+        #     path="/"  
+        # )
+        
         response.data = {
                             'msg': 'Login successful!',
                             'data': UserSerializer(user).data,
@@ -51,7 +52,8 @@ class LoginUser(APIView):
 
 class UserView(APIView):
     def get(self, request):
-        token = request.COOKIES.get('jwt')
+        # token = request.COOKIES.get('jwt')
+        token = request.headers.get('Authorization')
 
         if not token:
             raise AuthenticationFailed('Unauthenticated')

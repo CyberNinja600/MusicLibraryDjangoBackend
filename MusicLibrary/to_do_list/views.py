@@ -57,7 +57,8 @@ class ToDoListUpdateTaskView(APIView):
 
 
 def get_user_from_token(request):
-    token = request.COOKIES.get('jwt')
+    token = request.headers.get('Authorization')
+    # token = request.COOKIES.get('jwt')
     if not token:
         raise AuthenticationFailed('Unauthenticated')
     try:

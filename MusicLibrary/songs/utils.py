@@ -34,7 +34,8 @@ def validate_image(image_data, allowed_formats=['JPG','JPEG','PNG'], max_size_mb
         return {'status': False, 'error': "Error validating image: " + str(e)}
 
 def get_user_from_token(request):
-    token = request.COOKIES.get('jwt')
+    # token = request.COOKIES.get('jwt')
+    token = request.headers.get('Authorization')
     if not token:
         raise AuthenticationFailed('Unauthenticated')
     try:
