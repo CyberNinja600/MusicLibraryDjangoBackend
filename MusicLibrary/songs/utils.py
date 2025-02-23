@@ -37,13 +37,13 @@ def get_user_from_token(request):
     # token = request.COOKIES.get('jwt')
     token = request.headers.get('Authorization')
     if not token:
-        raise AuthenticationFailed('Unauthenticated')
+        raise AuthenticationFailed('Unauthenticated', 401)
     try:
         payload = jwt.decode(token, 'secret', algorithms=['HS256'])
         return payload['id']
     except jwt.ExpiredSignatureError:
-        raise AuthenticationFailed('Token has expired')
+        raise AuthenticationFailed('Token has expired', 401)
     except jwt.InvalidTokenError:
-        raise AuthenticationFailed('Invalid token')
+        raise AuthenticationFailed('Invalid token', 401)
     except ObjectDoesNotExist:
-        raise AuthenticationFailed('User not found')
+        raise AuthenticationFailed('User not found', 401)
