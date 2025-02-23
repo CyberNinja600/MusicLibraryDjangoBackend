@@ -23,8 +23,6 @@ class AlbumCreateView(APIView):
         except AuthenticationFailed as e:
             return Response({'status': 'false', "error": str(e)}, status=status.HTTP_401_UNAUTHORIZED)  
         except Exception as e:
-            if str(e) == 'Unauthenticated':
-                return Response({'status': 'false', "error": str(e)}, status=status.HTTP_401_UNAUTHORIZED)  
             return Response({'status': 'false', "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class AlbumReadView(APIView):
@@ -41,8 +39,6 @@ class AlbumReadView(APIView):
         except AuthenticationFailed as e:
             return Response({'status': 'false', "error": str(e)}, status=status.HTTP_401_UNAUTHORIZED)  
         except Exception as e:
-            if str(e) == 'Unauthenticated':
-                return Response({'status': 'false', "error": str(e)}, status=status.HTTP_401_UNAUTHORIZED)  
             return Response({'status': 'false', "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class AlbumUpdateView(APIView):
@@ -67,8 +63,6 @@ class AlbumUpdateView(APIView):
         except AuthenticationFailed as e:
             return Response({'status': 'false', "error": str(e)}, status=status.HTTP_401_UNAUTHORIZED)  
         except Exception as e:
-            if str(e) == 'Unauthenticated':
-                return Response({'status': 'false', "error": str(e)}, status=status.HTTP_401_UNAUTHORIZED)  
             return Response({'status': 'false', "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class AlbumDeleteView(APIView):
@@ -84,8 +78,6 @@ class AlbumDeleteView(APIView):
         except AuthenticationFailed as e:
             return Response({'status': 'false', "error": str(e)}, status=status.HTTP_401_UNAUTHORIZED)  
         except Exception as e:
-            if str(e) == 'Unauthenticated':
-                return Response({'status': 'false', "error": str(e)}, status=status.HTTP_401_UNAUTHORIZED)  
             return Response({'status': 'false', "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class AlbumListView(APIView):
@@ -96,8 +88,6 @@ class AlbumListView(APIView):
         except AuthenticationFailed as e:
             return Response({'status': 'false', "error": str(e)}, status=status.HTTP_401_UNAUTHORIZED)  
         except Exception as e:
-            if str(e) == 'Unauthenticated':
-                return Response({'status': 'false', "error": str(e)}, status=status.HTTP_401_UNAUTHORIZED)  
             return Response({'status': 'false', "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class AlbumAllListView(APIView):
@@ -109,6 +99,4 @@ class AlbumAllListView(APIView):
         except AuthenticationFailed as e:
             return Response({'status': 'false', "error": str(e)}, status=status.HTTP_401_UNAUTHORIZED)  
         except Exception as e:
-            if str(e) == 'Unauthenticated':
-                return Response({'status': 'false', "error": str(e)}, status=status.HTTP_401_UNAUTHORIZED)  
             return Response({'status': 'false', "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

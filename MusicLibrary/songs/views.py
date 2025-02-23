@@ -31,8 +31,6 @@ class SongsCreateView(APIView, FileValidationMixin):
             except AuthenticationFailed as e:
                 return Response({'status': 'false', "error": str(e)}, status=status.HTTP_401_UNAUTHORIZED)
             except Exception as e:
-                if str(e) == 'Unauthenticated':
-                    return Response({'status': 'false', "error": str(e)}, status=status.HTTP_401_UNAUTHORIZED)  
                 return Response({'status': 'false', "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         else:
@@ -52,8 +50,6 @@ class SongsDeleteView(APIView):
         except AuthenticationFailed as e:
             return Response({'status': 'false', "error": str(e)}, status=status.HTTP_401_UNAUTHORIZED)
         except Exception as e:
-            if str(e) == 'Unauthenticated':
-                return Response({'status': 'false', "error": str(e)}, status=status.HTTP_401_UNAUTHORIZED)  
             return Response({'status': 'false',"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 class SongsMyUploadsView(APIView):
@@ -66,8 +62,6 @@ class SongsMyUploadsView(APIView):
         except AuthenticationFailed as e:
             return Response({'status': 'false', "error": str(e)}, status=status.HTTP_401_UNAUTHORIZED)
         except Exception as e:
-            if str(e) == 'Unauthenticated':
-                return Response({'status': 'false', "error": str(e)}, status=status.HTTP_401_UNAUTHORIZED)  
             return Response({'status': 'false', "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class SongsAllUploadsView(APIView):
@@ -80,8 +74,6 @@ class SongsAllUploadsView(APIView):
         except AuthenticationFailed as e:
             return Response({'status': 'false', "error": str(e)}, status=status.HTTP_401_UNAUTHORIZED)  
         except Exception as e:
-            if str(e) == 'Unauthenticated':
-                return Response({'status': 'false', "error": str(e)}, status=status.HTTP_401_UNAUTHORIZED)  
             return Response({'status': 'false', "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class SongsUpdateView(APIView):
