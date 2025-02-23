@@ -3,6 +3,7 @@ import cloudinary
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.exceptions import AuthenticationFailed
 from .utils import  get_user_from_token
 from .mixins import FileValidationMixin
 from .services import *
@@ -26,7 +27,9 @@ class SongsCreateView(APIView, FileValidationMixin):
                     return Response({'status': 'true',"message": "File uploaded successfully", "song_url": uploaded_file['secure_url'], "image_url": uploaded_img['secure_url']}, status=status.HTTP_201_CREATED)
                 else:
                     return Response({'status': 'false', "error": "Failed to upload song."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+            
+            except AuthenticationFailed as e:
+                return Response({'status': 'false', "error": str(e)}, status=status.HTTP_401_UNAUTHORIZED)
             except Exception as e:
                 return Response({'status': 'false', "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -44,6 +47,8 @@ class SongsDeleteView(APIView):
             delete_son_by_id(request.data.get('song_id'))
             return Response({'status': 'true', "message": "File Deleted successfully", "data" : song, "image_data": image_delete_result, "song_data": song_delete_result}, status=status.HTTP_200_OK)
         
+        except AuthenticationFailed as e:
+            return Response({'status': 'false', "error": str(e)}, status=status.HTTP_401_UNAUTHORIZED)
         except Exception as e:
             return Response({'status': 'false',"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
@@ -53,6 +58,9 @@ class SongsMyUploadsView(APIView):
             get_user_from_token(request)
             data = get_my_uploads(get_user_from_token(request))
             return Response({'status': 'true', 'data': data}, status=status.HTTP_200_OK)
+        
+        except AuthenticationFailed as e:
+            return Response({'status': 'false', "error": str(e)}, status=status.HTTP_401_UNAUTHORIZED)
         except Exception as e:
             return Response({'status': 'false', "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -62,6 +70,9 @@ class SongsAllUploadsView(APIView):
             get_user_from_token(request)
             data = SongsSerializer(Songs.objects.all(), many=True).data
             return Response({'status': 'true', 'data': data}, status=status.HTTP_200_OK)
+        
+        except AuthenticationFailed as e:
+            return Response({'status': 'false', "error": str(e)}, status=status.HTTP_401_UNAUTHORIZED)  
         except Exception as e:
             return Response({'status': 'false', "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
